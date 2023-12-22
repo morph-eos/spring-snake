@@ -234,3 +234,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### Database Data ###
+dbdata/
