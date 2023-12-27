@@ -1,5 +1,8 @@
 package com.springsnake.backend;
 
+import java.util.Map;
+
+import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,15 +15,16 @@ import lombok.AllArgsConstructor;
 public class ValueController {
 
     private final ValueService service;
-    
-	@GetMapping("/get")
-    public String get(@RequestParam("key") String key) {
+
+    @GetMapping("/get")
+    public Object get(@RequestParam("key") String key) {
         return service.get(key);
     }
-	
+
     @PostMapping("/save")
-    public String save(@RequestBody String key, String value) {
-        return service.save(key,value);
+    public String save(@RequestBody String body) {
+        Map < String, Object > parsedBody = JsonParserFactory.getJsonParser().parseMap(body);
+        return service.save(parsedBody.get("key").toString(), parsedBody.get("value"));
     }
 	
 }

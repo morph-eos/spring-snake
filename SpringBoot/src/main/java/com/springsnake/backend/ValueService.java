@@ -11,7 +11,7 @@ public class ValueService {
     @Autowired
     private final ValueRepository valueRepo;
 
-    public String get(String key) {
+    public Object get(String key) {
         values value = valueRepo.findByKey(key);
          if (value == null) {
             return "The value has not been found";
@@ -20,7 +20,7 @@ public class ValueService {
         }
     }
 
-    public String save(String key, String value) {
+    public String save(String key, Object value) {
         valueRepo.insert(new values(key, value));
         return "Saved";
     }

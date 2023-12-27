@@ -9,11 +9,11 @@ import lombok.Data;
 public class values {
     @Id
     private String id;
-    
-    private String key;
-    private String value;
 
-    public values(String key, String value) {
+    private String key;
+    private Object value;
+
+    public values(String key, Object value) {
         this.key = key;
         this.value = value;
     }
