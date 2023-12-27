@@ -1,0 +1,197 @@
+{
+	"info": {
+		"_postman_id": "d45d4ee6-910c-465f-ad31-794fc88d847f",
+		"name": "SpringSnake APIs Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "31868545"
+	},
+	"item": [
+		{
+			"name": "Put",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.sendRequest(pm.collectionVariables.get(\"URL\")+\"/get?key=\"+pm.collectionVariables.get(\"TestKey\"), function (err, response) {\r",
+							"    pm.test(\"The status of the GET after the PUT is OK\", function () {\r",
+							"        if (response.status != \"OK\") {\r",
+							"            throw new Error (\"The status code of the GET after the PUT is not OK but it's \" + response.status);\r",
+							"        }\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"key\": \"{{TestKey}}\",\r\n    \"value\": {{TestValue}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{URL}}/put"
+			},
+			"response": []
+		},
+		{
+			"name": "Get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/get?key={{TestKey}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{TestKey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.sendRequest(pm.collectionVariables.get(\"URL\")+\"/get?key=\"+pm.collectionVariables.get(\"TestKey\"), function (err, response) {\r",
+							"    pm.test(\"The status of the GET after the PUT is not OK\", function () {\r",
+							"        if (response.status == \"OK\") {\r",
+							"            throw new Error (\"The status code of the GET after the PUT is OK\");\r",
+							"        }\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"CollectionRunEnded\", \"True\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/delete?key={{TestKey}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"delete"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{TestKey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"if (pm.collectionVariables.get(\"CollectionRunEnded\") == \"True\") {",
+					"    pm.collectionVariables.set(\"TestKey\", \"TestItem\")",
+					"    if (pm.collectionVariables.get(\"TestValue\") == pm.collectionVariables.get(\"TestString\")) {",
+					"        pm.collectionVariables.set(\"TestValue\", pm.collectionVariables.get(\"TestObject\"))",
+					"    } else if (pm.collectionVariables.get(\"TestValue\") == pm.collectionVariables.get(\"TestObject\")) {",
+					"        pm.collectionVariables.set(\"TestValue\", pm.collectionVariables.get(\"TestNumber\"))",
+					"    } else {",
+					"        pm.collectionVariables.set(\"TestValue\", pm.collectionVariables.get(\"TestString\"))",
+					"    }",
+					"    pm.collectionVariables.set(\"CollectionRunEnded\", \"False\");",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "CollectionRunEnded",
+			"value": "True",
+			"type": "string"
+		},
+		{
+			"key": "URL",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "TestKey",
+			"value": "Hello",
+			"type": "string"
+		},
+		{
+			"key": "TestValue",
+			"value": "\"There\"",
+			"type": "string"
+		},
+		{
+			"key": "TestString",
+			"value": "\"Oiboh\"",
+			"type": "string"
+		},
+		{
+			"key": "TestObject",
+			"value": "{\"ObjectItem\":\"aisudguiasdaiu\"}",
+			"type": "string"
+		},
+		{
+			"key": "TestNumber",
+			"value": "-3.141592654",
+			"type": "string"
+		}
+	]
+}
