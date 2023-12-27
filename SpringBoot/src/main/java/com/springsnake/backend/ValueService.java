@@ -20,7 +20,7 @@ public class ValueService {
         }
     }
 
-    public String save(String key, Object value) {
+    public String put(String key, Object value) {
         valueRepo.insert(new values(key, value));
         return "Saved";
     }
