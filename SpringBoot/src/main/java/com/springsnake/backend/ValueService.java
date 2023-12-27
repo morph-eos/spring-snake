@@ -24,4 +24,10 @@ public class ValueService {
         valueRepo.insert(new values(key, value));
         return "Saved";
     }
+
+    public String delete(String key) {
+        valueRepo.delete(valueRepo.findByKey(key));
+        return "Deleted";
+    }
+    
 }
