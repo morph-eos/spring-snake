@@ -3,6 +3,8 @@ package com.springsnake.backend;
 import java.util.Map;
 
 import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,10 +24,13 @@ public class ValueController {
     }
 
     @PostMapping("/save")
-    public String save(@RequestBody String body) {
+    public ResponseEntity<String> save(@RequestBody String body) {
         Map<String, Object> parsedBody = JsonParserFactory.getJsonParser().parseMap(body);
-        assert !service.get(parsedBody.get("key").toString()).equals("The value has not been found") : "This value exists already";
-        return service.save(parsedBody.get("key").toString(), parsedBody.get("value"));
+        String res = "This value exists already"; 
+        if (service.get(parsedBody.get("key").toString()) == "The value has not been found") {
+            return new ResponseEntity<String> (service.save(parsedBody.get("key").toString(), parsedBody.get("value")), HttpStatus.OK);
+        }
+        return new ResponseEntity<String>(res, HttpStatus.CONFLICT);
     }
 	
 }
