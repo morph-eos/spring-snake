@@ -8,7 +8,10 @@ services:
       MONGO_INITDB_ROOT_USERNAME: springsnake
       MONGO_INITDB_ROOT_PASSWORD: waQxTVZ48hPBFc4
     volumes:
-      - ./dbdata:/data/db
+      - type: volume
+        source: dbdata
+        target: /data/db
+        read_only: false
   mongo-espress:
     image: mongo-express
     ports:
@@ -21,3 +24,5 @@ services:
 networks:
     default:
         name: springsnake_network
+volumes:
+    dbdata:

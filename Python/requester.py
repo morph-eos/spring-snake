@@ -1,11 +1,8 @@
+import requests
+
 def save(k, v):
-    global key, value
-    key = k
-    value = v
+    requests.post('http://localhost:8081', data={'key': k, 'value': v})
     
 
-def get (k):
-    if k == key:
-        return value
-    else:
-        return 'Not found'
+def get(k):
+    return requests.get('http://localhost:8081', params={'key': k})

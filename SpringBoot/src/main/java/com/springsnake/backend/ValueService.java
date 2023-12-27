@@ -14,7 +14,7 @@ public class ValueService {
     public String get(String key) {
         values value = valueRepo.findByKey(key);
          if (value == null) {
-            return "Not Found";
+            return "The value has not been found";
         } else {
             return value.getValue();
         }
