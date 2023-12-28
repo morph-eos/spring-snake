@@ -1,4 +1,4 @@
-package com.springsnake.backend;
+package com.springsnake.backend.utils;
 
 import java.util.List;
 import java.util.Optional;

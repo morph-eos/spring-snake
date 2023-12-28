@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.springsnake.backend.utils.ValueDTO;
+
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
 @RequestMapping("/api")
 @RestController
@@ -20,12 +22,6 @@ public class ValueController {
     private final String notfound = "The value has not been found";
 
     private final ValueService service;
-
-    @Data
-    private static class ValueDTO {
-        private String key;
-        private Object value;
-    }
 
     @GetMapping("/get")
     public ResponseEntity<Object> get(@RequestParam("key") String key) {
