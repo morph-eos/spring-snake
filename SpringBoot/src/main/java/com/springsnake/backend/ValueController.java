@@ -1,5 +1,7 @@
 package com.springsnake.backend;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,12 +33,27 @@ public class ValueController {
         return new ResponseEntity<Object>(service.get(key), HttpStatus.OK);
     }
 
+    @GetMapping("/getall")
+    public ResponseEntity<List<ValueDTO>> getAll() {
+        return new ResponseEntity<List<ValueDTO>>(service.getAll(), HttpStatus.OK);
+    }
+
     @PutMapping("/put")
     public ResponseEntity<String> put(@RequestBody ValueDTO value) {
         if (service.get(value.getKey()) ==  notfound) {
             return new ResponseEntity<String> (service.put(value.getKey(), value.getValue()), HttpStatus.OK);
         }
         return new ResponseEntity<String>("This value exists already", HttpStatus.CONFLICT);
+    }
+
+    @PutMapping("/putall")
+    public ResponseEntity<String> putAll(@RequestBody List<ValueDTO> inputValues) {
+        for (ValueDTO value : inputValues) {
+            if (service.get(value.getKey()) != notfound) {
+                return new ResponseEntity<String>("One of the values exists already", HttpStatus.CONFLICT);
+            }
+        }
+        return new ResponseEntity<String>(service.putAll(inputValues), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
