@@ -76,7 +76,145 @@
 			"response": []
 		},
 		{
+			"name": "GetFull",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/getfull?key={{TestKey}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"getfull"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{TestKey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.sendRequest(pm.collectionVariables.get(\"URL\")+\"/get?key=\"+pm.collectionVariables.get(\"TestKey\"), function (err, response) {\r",
+							"    pm.test(\"The status of the GET after the PUT is not OK\", function () {\r",
+							"        if (response.status == \"OK\") {\r",
+							"            throw new Error (\"The status code of the GET after the PUT is OK\");\r",
+							"        }\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/delete?key={{TestKey}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"delete"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{TestKey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PutAll",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.sendRequest(pm.collectionVariables.get(\"URL\")+\"/get?key=\"+pm.collectionVariables.get(\"TestKey\"), function (err, response) {\r",
+							"    pm.test(\"The status of the GET after the PUT is OK\", function () {\r",
+							"        if (response.status != \"OK\") {\r",
+							"            throw new Error (\"The status code of the GET after the PUT is not OK but it's \" + response.status);\r",
+							"        }\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"key\": \"{{TestKey}}\",\r\n    \"value\": {{TestValue}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{URL}}/put"
+			},
+			"response": []
+		},
+		{
+			"name": "GetAll",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{URL}}/getall"
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteAll",
 			"event": [
 				{
 					"listen": "test",

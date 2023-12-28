@@ -29,10 +29,7 @@ public class ValueDAO {
     public List<ValueDTO> getAll() {
         return valuesList.stream().map(value -> {
             // Mapping values to ValueDTO
-            ValueDTO valueDTO = new ValueDTO();
-            valueDTO.setKey(value.getKey());
-            valueDTO.setValue(value.getValue());
-            return valueDTO;
+            return new ValueDTO(value.getKey(), value.getValue(), value.getLastchange());
         }).collect(Collectors.toList());
     }
 

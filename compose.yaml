@@ -16,6 +16,9 @@ services:
       - 8080:8080
     environment:
       SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_DATABASE: admin
+      SPRING_DATA_MONGODB_USERNAME: springsnake
+      SPRING_DATA_MONGODB_PASSWORD: waQxTVZ48hPBFc4
 networks:
     default:
         name: springsnake_network
