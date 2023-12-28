@@ -2,8 +2,6 @@ version: "3"
 services:
   mongodb:
     image: mongo
-    ports:
-      - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: springsnake
       MONGO_INITDB_ROOT_PASSWORD: waQxTVZ48hPBFc4
@@ -12,6 +10,12 @@ services:
         source: dbdata
         target: /data/db
         read_only: false
+  spring:
+    image: m04ph3u2/springsnakeboot:1.0
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb
 networks:
     default:
         name: springsnake_network
