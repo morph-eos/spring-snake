@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
+//Value Schema
 @Data
 @Document
 public class values {

@@ -11,19 +11,24 @@ import com.springsnake.backend.values;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ValueDAO{
+public class ValueDAO {
 
+    // Autowired annotation is used for automatic dependency injection by Spring
     @Autowired
     private final ValueRepository valueRepo;
-     
-    private List<values> valuesList = new ArrayList<values>();
 
+    // List to hold instances of values
+    private List<values> valuesList = new ArrayList<>();
+
+    // Method to retrieve values from the repository and store them in the valuesList
     public void pull() {
         valuesList = valueRepo.findAll();
     }
 
+    // Method to convert valuesList to a list of ValueDTO objects
     public List<ValueDTO> getAll() {
         return valuesList.stream().map(value -> {
+            // Mapping values to ValueDTO
             ValueDTO valueDTO = new ValueDTO();
             valueDTO.setKey(value.getKey());
             valueDTO.setValue(value.getValue());
@@ -31,18 +36,21 @@ public class ValueDAO{
         }).collect(Collectors.toList());
     }
 
+    // Method to clear the valuesList
     public void clear() {
         valuesList.clear();
     }
 
-    public void saveAll(List<ValueDTO> input){
+    // Method to save a list of ValueDTO objects to valuesList
+    public void saveAll(List<ValueDTO> input) {
         for (ValueDTO value : input) {
+            // Creating values objects from ValueDTO and adding them to valuesList
             valuesList.add(new values(value.getKey(), value.getValue()));
-        }    
+        }
     }
 
+    // Method to save all values in valuesList back to the repository
     public void close() {
         valueRepo.saveAll(valuesList);
     }
-
 }
