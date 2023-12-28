@@ -1,8 +1,5 @@
 package com.springsnake.backend;
 
-import java.util.Map;
-
-import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,9 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@RequestMapping("/api")
 @RestController
 @AllArgsConstructor
 public class ValueController {
@@ -20,6 +20,12 @@ public class ValueController {
     private final String notfound = "The value has not been found";
 
     private final ValueService service;
+
+    @Data
+    private static class ValueDTO {
+        private String key;
+        private Object value;
+    }
 
     @GetMapping("/get")
     public ResponseEntity<Object> get(@RequestParam("key") String key) {
@@ -30,13 +36,11 @@ public class ValueController {
     }
 
     @PutMapping("/put")
-    public ResponseEntity<String> put(@RequestBody String body) {
-        Map<String, Object> parsedBody = JsonParserFactory.getJsonParser().parseMap(body);
-        String res = "This value exists already"; 
-        if (service.get(parsedBody.get("key").toString()) ==  notfound) {
-            return new ResponseEntity<String> (service.put(parsedBody.get("key").toString(), parsedBody.get("value")), HttpStatus.OK);
+    public ResponseEntity<String> put(@RequestBody ValueDTO value) {
+        if (service.get(value.getKey()) ==  notfound) {
+            return new ResponseEntity<String> (service.put(value.getKey(), value.getValue()), HttpStatus.OK);
         }
-        return new ResponseEntity<String>(res, HttpStatus.CONFLICT);
+        return new ResponseEntity<String>("This value exists already", HttpStatus.CONFLICT);
     }
 
     @DeleteMapping("/delete")
