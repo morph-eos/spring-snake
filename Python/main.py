@@ -1,15 +1,10 @@
 import os
 import yaml
-import schema
 import helper
 import requester
 
-print('+-----------------------------------+\n| Welcome to Spring Snake CLI Client |\n+-----------------------------------+\n'+helper.nice_image+'''
-Hello there, welcome to Spring Snake, a code that allows you to save and retrieve some key-value data with Python and Spring Boot APIs.
-Please, tell me, what do you want to do?:
-1) I want to save some data
-2) I want to get some data
-3) I want to delete some data''')
+print('+-----------------------------------+\n| Welcome to Spring Snake CLI Client |\n+-----------------------------------+\n' + helper.nice_image + '''
+Hello there, welcome to Spring Snake, a code that allows you to save and retrieve some key-value data with Python and Spring Boot APIs.''' + helper.menu)
 option = input()
 response = 'y'
 while response != 'n':
@@ -18,20 +13,20 @@ while response != 'n':
     if option == '1':
       values = set()
       while True:
-        print("Now insert the key of the value you want to save:")
+        print("Insert the key of the value you want to save:")
         key = input()
-        print("Nice! Now, insert the value you want to save:")
+        print("Now, insert the value you want to save:")
         value = input()
         if (not key) or (not value):
-          print("Sorry, I didn't understand that. Please, try again.")
+          helper.sorryprint()
         else:
-          print("Good! Now, do you want to save more values? (y/n)")
+          print("Do you want to save more values? (y/n)")
           response = input()
           if response != 'y' and len(values) == 0:
-            print(requester.save(schema.Value(key, value)))
+            print(requester.save(helper.Value(key, value)))
             break
           else:
-            values.add(schema.Value(key, value))
+            values.add(helper.Value(key, value))
           if response != 'y' and len(values) != 0:
             break
         if len(values) == 0 and (key != '' or value != ''):
@@ -52,7 +47,7 @@ while response != 'n':
         if response == 'h':
           print(requester.getall())
         elif response == 'f':
-          print('Nice! Now, do you prefer to have them in a JSON format or a YAML format? (j/y)')
+          print('Now, do you prefer to have them in a JSON format or a YAML format? (j/y)')
           response = input()
           if response == 'j':
             with open("output.json", "w") as outfile:
@@ -61,9 +56,9 @@ while response != 'n':
             with open("output.yaml", "w") as outfile:
               outfile.write(yaml.dump(requester.getall().json()))
         else:
-          print("Sorry, I didn't understand that. Please, try again.")
+          helper.sorryprint()
       else:
-        print("Sorry, I didn't understand that. Please, try again.")
+        helper.sorryprint()
     elif option == '3':
       print("Do you want to delete just one value or all of them? (o/a)")
       response = input()
@@ -79,17 +74,14 @@ while response != 'n':
         elif response == 'n':
           print("Ok, then.")
         else:
-          print("Sorry, I didn't understand that. Please, try again.")
+          helper.sorryprint()
       else:
-        print("Sorry, I didn't understand that. Please, try again.")
+        helper.sorryprint()
     break
   print("Do you want to do something else? (y/n)")
   response = input()
   os.system('cls' if os.name == 'nt' else 'clear')
   if response != 'n':
-    print('''Now please, tell me, what do you want to do?:
-    1) I want to save some data
-    2) I want to get some data
-    3) I want to delete some data''')
+    print(helper.menu)
     option = input()
   os.system('cls' if os.name == 'nt' else 'clear')
