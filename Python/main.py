@@ -1,5 +1,4 @@
 import os
-import json
 import yaml
 import schema
 import helper
@@ -17,8 +16,7 @@ while response != 'n':
   while True:
     os.system('cls' if os.name == 'nt' else 'clear')
     if option == '1':
-      keys = []
-      values = []
+      values = set()
       while True:
         print("Now insert the key of the value you want to save:")
         key = input()
@@ -29,40 +27,39 @@ while response != 'n':
         else:
           print("Good! Now, do you want to save more values? (y/n)")
           response = input()
-          if response != 'y' and keys.lenght() == 0:
-            requester.save(key, value)
+          if response != 'y' and len(values) == 0:
+            print(requester.save(schema.Value(key, value)))
             break
           else:
-            keys.add(key)
-            values.add(value)
-          if response != 'y' and keys.lenght() != 0:
+            values.add(schema.Value(key, value))
+          if response != 'y' and len(values) != 0:
             break
-        if keys.lenght() == 0:
+        if len(values) == 0 and (key != '' or value != ''):
           break
         else:
-          requester.saveall(keys, values)
+          print(requester.saveall(values))
       break
     elif option == '2':
-      print("Do you want to get a specific value or all values? (s/a)\n")
+      print("Do you want to get a specific value or all values? (s/a)")
       response = input()
       if response == 's':
         print("Now, insert the key you want to get:")
         key = input()
-        print('The linked value is: ' + requester.get(key))
+        print('The linked value is: ' + requester.get(key).text)
       elif response == 'a':
         print('Do you want to get all of them here or in a file? (h/f)')
         response = input()
         if response == 'h':
-          print(requester.getall().toString())
+          print(requester.getall())
         elif response == 'f':
           print('Nice! Now, do you prefer to have them in a JSON format or a YAML format? (j/y)')
           response = input()
           if response == 'j':
             with open("output.json", "w") as outfile:
-              outfile.write(requester.getall())
+              outfile.write(requester.getall().json)
           elif response == 'y':
             with open("output.yaml", "w") as outfile:
-              outfile.write(yaml.dump(requester.getall()))
+              outfile.write(yaml.dump(requester.getall().json()))
         else:
           print("Sorry, I didn't understand that. Please, try again.")
       else:
@@ -73,12 +70,12 @@ while response != 'n':
       if response == 'o':
         print("Now, insert the key of the value you want to delete:")
         key = input()
-        requester.delete(key)
+        print(requester.delete(key))
       elif response == 'a':
         print("Are you sure? (y/n)")
         response = input()
         if response == 'y':
-          requester.deleteall()
+          print(requester.deleteall())
         elif response == 'n':
           print("Ok, then.")
         else:
@@ -88,6 +85,7 @@ while response != 'n':
     break
   print("Do you want to do something else? (y/n)")
   response = input()
+  os.system('cls' if os.name == 'nt' else 'clear')
   if response != 'n':
     print('''Now please, tell me, what do you want to do?:
     1) I want to save some data
