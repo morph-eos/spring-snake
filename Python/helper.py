@@ -1,3 +1,7 @@
+import pandas
+import datetime
+import pytz
+
 # Value class
 class Value:
     def __init__(self, key, value):
@@ -46,3 +50,12 @@ menu = '''Please, tell me, what do you want to do?:
 # Sorry print function
 def sorryprint ():
     print("Sorry, I didn't understand that. Please, try again.")
+
+# JSON Prettifier function
+def prettyjson(data):
+    df = pandas.DataFrame(data)
+    # Set the DataFrame index to the 'key' column
+    df.set_index('key', inplace=True)
+    # Convert the 'lastchange' column to different format
+    df['lastchange']=[pytz.timezone(dt[-4:-1]).localize(datetime.datetime.strptime(dt[:-9], "%Y-%m-%dT%H:%M:%S.%f")).strftime('%Y-%m-%d %H:%M:%S %Z') for dt in df['lastchange']]
+    return df

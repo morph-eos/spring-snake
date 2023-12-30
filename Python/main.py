@@ -67,7 +67,7 @@ while response != 'n':
         response = input()
         if response == 'h':
           # Print all values
-          print(requester.getall())
+          print(helper.prettyjson(requester.getall().json()))
         elif response == 'f':
           # Save all values to a file
           print('Now, do you prefer to have them in a JSON format or a YAML format? (j/y)')
