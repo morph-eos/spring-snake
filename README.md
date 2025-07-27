@@ -181,33 +181,46 @@ The application includes health checks for both services:
 - MongoDB: Available at `mongodb:27017`
 - Spring Boot: Available at `http://localhost:8080/actuator/health`
 
-## API Endpoints
+### Batch Operations Examples
 
-### Core Operations
+```bash
+# Save multiple values at once
+curl -X PUT "http://localhost:8080/api/putall" \
+  -H "Content-Type: application/json" \
+  -d '[
+    {"key":"user1","value":"john"},
+    {"key":"user2","value":"jane"}
+  ]'
 
-- `GET /api/get?key={key}` - Retrieve a value by key
-- `GET /api/getfull?key={key}` - Retrieve full value object by key  
-- `GET /api/getall` - Retrieve all values
-- `PUT /api/put` - Save a new value
-- `PUT /api/putall` - Save multiple values
-- `POST /api/update` - Update an existing value
-- `DELETE /api/delete?key={key}` - Delete a specific value
-- `DELETE /api/deleteall` - Delete all values
+# Get all values
+curl -X GET "http://localhost:8080/api/getall"
 
-### Health & Monitoring
-
-- `GET /actuator/health` - Application health status
-- `GET /actuator/info` - Application information
+# Delete all values (caution!)
+curl -X DELETE "http://localhost:8080/api/deleteall"
+```
 
 ## Usage
 
-The Python CLI client provides a menu for interacting with the Spring Boot backend. Here are the options:
+The Python CLI client provides an interactive menu for seamless interaction with the Spring Boot backend:
 
-1. Save values: You can save key-value pairs to the database.
-2. Get values: You can retrieve specific or all values from the database. You can also choose to save the retrieved values to a JSON or YAML file.
-3. Delete values: You can delete a specific value or all values from the database.
+### CLI Operations
 
-## Development
+1. **Save Operation**: Store single or multiple key-value pairs with validation
+2. **Get Operation**: Retrieve specific values by key or export all data to files
+3. **Delete Operation**: Remove specific keys or clear the entire database
+4. **Export Functions**: Save retrieved data to JSON, CSV, or text formats
+
+### CLI Usage Examples
+
+```bash
+# Start the interactive CLI (normal mode)
+python main.py
+
+# Start with debug logging enabled
+python main.py --debug
+
+# The CLI will guide you through available operations
+```
 
 ## Development
 
@@ -261,6 +274,13 @@ This version includes significant enhancements over the initial implementation:
 - **Reproducible Builds**: Consistent container builds across environments
 - **Health Checks**: Built-in monitoring and health verification
 - **Security**: Improved MongoDB authentication and container security
+
+#### Bug Fixes (Latest)
+
+- **ValueDAO Constructor Fix**: Resolved critical NullPointerException in `/api/putall` endpoint
+- **Lombok Compatibility**: Fixed field initialization conflicts with @AllArgsConstructor
+- **Error Handling**: Improved error messages and HTTP status code consistency
+- **Build Stability**: Enhanced Docker build process and dependency management
 
 ## Testing
 
@@ -319,16 +339,6 @@ This project demonstrates modern software development practices including:
 - Structured logging and monitoring
 - Reproducible builds and deployment
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Author
-
-**M04ph3u2** - [GitHub Profile](https://github.com/M04ph3u2)
-
-Project Repository: [Spring-Snake](https://github.com/M04ph3u2/Spring-Snake)
-
 ### Security Notes
 
 - Environment variables are used instead of hardcoded credentials
@@ -338,4 +348,10 @@ Project Repository: [Spring-Snake](https://github.com/M04ph3u2/Spring-Snake)
 
 ## License
 
-This project is open-source and available under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Author
+
+**M04ph3u2** - [GitHub Profile](https://github.com/M04ph3u2)
+
+Project Repository: [Spring-Snake](https://github.com/M04ph3u2/Spring-Snake)
