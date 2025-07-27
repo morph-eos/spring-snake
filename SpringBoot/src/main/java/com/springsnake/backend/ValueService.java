@@ -52,7 +52,7 @@ public class ValueService {
     // Method to get all values
     public List<ValueDTO> getAll() {
         // Create a ValueDAO to handle data operations
-        ValueDAO multivalues = new ValueDAO(valueRepo, null);
+        ValueDAO multivalues = new ValueDAO(valueRepo);
         // Retrieve all values from the repository
         multivalues.pull();
         // Return all values
@@ -70,7 +70,7 @@ public class ValueService {
     // Method to add or update multiple values
     public String putAll(List<ValueDTO> inputValues) {
         // Create a ValueDAO to handle data operations
-        ValueDAO multivalues = new ValueDAO(valueRepo, null);
+        ValueDAO multivalues = new ValueDAO(valueRepo);
         // Clear existing values
         multivalues.clear();
         // Save all input values
