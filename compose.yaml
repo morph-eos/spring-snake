@@ -1,24 +1,41 @@
-version: "3"
 services:
   mongodb:
-    image: mongo:7.0.4
+    image: mongo:8.0@sha256:a6bda40d00e56682aeaa1bfc88e024b7dd755782c575c02760104fe02010f94f
     environment:
-      MONGO_INITDB_ROOT_USERNAME: springsnake
-      MONGO_INITDB_ROOT_PASSWORD: waQxTVZ48hPBFc4
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-springsnake}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-defaultpassword}
     volumes:
       - type: volume
         source: dbdata
         target: /data/db
         read_only: false
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
   spring:
-    image: m04ph3u2/springsnakeboot:1.0
+    build:
+      context: ./SpringBoot
+      dockerfile: Dockerfile
     ports:
-      - 8080:8080
+      - "${SPRING_PORT:-8080}:8080"
     environment:
       SPRING_DATA_MONGODB_HOST: mongodb
-      SPRING_DATA_MONGODB_DATABASE: admin
-      SPRING_DATA_MONGODB_USERNAME: springsnake
-      SPRING_DATA_MONGODB_PASSWORD: waQxTVZ48hPBFc4
+      SPRING_DATA_MONGODB_DATABASE: ${MONGO_DATABASE:-admin}
+      SPRING_DATA_MONGODB_USERNAME: ${MONGO_USERNAME:-springsnake}
+      SPRING_DATA_MONGODB_PASSWORD: ${MONGO_PASSWORD:-defaultpassword}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE:-docker}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health", "||", "curl", "-f", "http://localhost:8080/api/getall"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 networks:
     default:
         name: springsnake_network

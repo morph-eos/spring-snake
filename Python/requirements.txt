@@ -1,0 +1,14 @@
+# Core dependencies
+requests==2.31.0
+
+# Data processing (updated for Python 3.13 compatibility)
+pandas>=2.2.0
+pytz==2023.3
+
+# YAML support
+pyyaml==6.0.1
+
+# Development dependencies (optional)
+# pytest==8.0.0
+# black==24.0.0
+# flake8==7.0.0

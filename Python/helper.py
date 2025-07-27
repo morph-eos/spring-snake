@@ -13,10 +13,10 @@ class Value:
         return self.value
 
 # Some useful text variables
-nice_image='''
+nice_image=r'''
                             __..._                 |
                         ..-'      o.             .'|'.
-                     .-'            :           /.'|\ \\
+                     .-'            :           /.'|\ \
                  _..'             .'__..--<     | /|'.|
           ...--""                 '-.            \ |\/
       ..-"                       __.'             \|/
@@ -53,9 +53,32 @@ def sorryprint ():
 
 # JSON Prettifier function
 def prettyjson(data):
+    if not data:  # Check if data is empty
+        return "No data found in the database."
+    
     df = pandas.DataFrame(data)
     # Set the DataFrame index to the 'key' column
     df.set_index('key', inplace=True)
+    
     # Convert the 'lastchange' column to different format
-    df['lastchange']=[pytz.timezone(dt[-4:-1]).localize(datetime.datetime.strptime(dt[:-9], "%Y-%m-%dT%H:%M:%S.%f")).strftime('%Y-%m-%d %H:%M:%S %Z') for dt in df['lastchange']]
+    # Handle the format: "2025-07-27T09:48:50.883175427Z[Etc/UTC]"
+    formatted_dates = []
+    for dt in df['lastchange']:
+        # Extract timezone name from format like "[Etc/UTC]"
+        timezone_part = dt[dt.find('[') + 1:dt.find(']')]
+        # Extract datetime part (remove Z and timezone info)
+        dt_part = dt[:dt.find('Z')]
+        # Truncate microseconds to 6 digits (Python datetime limit)
+        if '.' in dt_part:
+            base_dt, microseconds = dt_part.split('.')
+            microseconds = microseconds[:6].ljust(6, '0')  # Ensure 6 digits
+            dt_part = f"{base_dt}.{microseconds}"
+        
+        # Parse and format the datetime
+        parsed_dt = datetime.datetime.strptime(dt_part, "%Y-%m-%dT%H:%M:%S.%f")
+        # Convert to UTC timezone and then format
+        utc_dt = pytz.timezone('UTC').localize(parsed_dt)
+        formatted_dates.append(utc_dt.strftime('%Y-%m-%d %H:%M:%S %Z'))
+    
+    df['lastchange'] = formatted_dates
     return df
