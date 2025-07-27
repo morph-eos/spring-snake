@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.springsnake.backend.values;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class ValueDAO {
 
     // Autowired annotation is used for automatic dependency injection by Spring
@@ -18,7 +15,13 @@ public class ValueDAO {
     private final ValueRepository valueRepo;
 
     // List to hold instances of values
-    private List<values> valuesList = new ArrayList<>();
+    private List<values> valuesList;
+
+    // Constructor that properly initializes valuesList
+    public ValueDAO(ValueRepository valueRepo) {
+        this.valueRepo = valueRepo;
+        this.valuesList = new ArrayList<>();
+    }
 
     // Method to retrieve values from the repository and store them in the valuesList
     public void pull() {
