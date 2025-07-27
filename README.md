@@ -30,6 +30,14 @@
           '--'
 </pre>
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.org/projects/jdk/17/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Python](https://img.shields.io/badge/Python-3.13+-blue.svg)](https://www.python.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-8.0-green.svg)](https://www.mongodb.com/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](https://docs.docker.com/compose/)
+[![CLI](https://img.shields.io/badge/Interface-CLI-red.svg)](https://en.wikipedia.org/wiki/Command-line_interface)
+
 ## Table of Contents
 
 - [Description](#description)
@@ -54,7 +62,6 @@
   - [Scripts](#scripts)
   - [Development Workflow](#development-workflow)
 - [Project Structure](#project-structure)
-  - [Recent Improvements (Phase 2)](#recent-improvements-phase-2)
 - [Testing](#testing)
   - [Manual API Testing](#manual-api-testing)
   - [Python CLI Testing](#python-cli-testing)
@@ -319,40 +326,6 @@ Spring-Snake/
 ├── README.md                       # This file
 └── SpringSnake_APIs_Tests.postman_collection.json  # Postman API tests
 ```
-
-### Recent Improvements (Phase 2)
-
-This version includes significant enhancements over the initial implementation:
-
-#### Backend Improvements
-
-- **Enhanced Error Handling**: Comprehensive HTTP status codes and error messages
-- **Input Validation**: Bean validation with detailed error responses  
-- **Improved Documentation**: Extensive JavaDoc comments and API documentation
-- **Logging Enhancement**: Structured logging for better debugging and monitoring
-- **Code Quality**: Improved code organization and maintainability
-
-#### Frontend Improvements
-
-- **Debug Mode**: Optional detailed logging with `--debug` flag
-- **Enhanced UX**: Clean interface without verbose logging by default
-- **Error Recovery**: Graceful handling of HTTP errors and network issues
-- **Input Validation**: Comprehensive validation with helpful error messages
-- **Keyboard Interrupt Handling**: Proper cleanup on Ctrl+C
-
-#### Infrastructure Improvements
-
-- **Docker Optimization**: Multi-stage builds with SHA256 hash pinning
-- **Reproducible Builds**: Consistent container builds across environments
-- **Health Checks**: Built-in monitoring and health verification
-- **Security**: Improved MongoDB authentication and container security
-
-#### Bug Fixes (Latest)
-
-- **ValueDAO Constructor Fix**: Resolved critical NullPointerException in `/api/putall` endpoint
-- **Lombok Compatibility**: Fixed field initialization conflicts with @AllArgsConstructor
-- **Error Handling**: Improved error messages and HTTP status code consistency
-- **Build Stability**: Enhanced Docker build process and dependency management
 
 ## Testing
 
