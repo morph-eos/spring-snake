@@ -2,23 +2,687 @@
 	"info": {
 		"_postman_id": "d45d4ee6-910c-465f-ad31-794fc88d847f",
 		"name": "SpringSnake APIs Tests",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"description": "Complete test collection for Spring Snake REST API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31868545"
 	},
 	"item": [
 		{
-			"name": "Put",
+			"name": "Health Check",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.sendRequest(pm.collectionVariables.get(\"URL\")+\"/get?key=\"+pm.collectionVariables.get(\"TestKey\"), function (err, response) {\r",
-							"    pm.test(\"The status of the GET after the PUT is OK\", function () {\r",
-							"        if (response.status != \"OK\") {\r",
-							"            throw new Error (\"The status code of the GET after the PUT is not OK but it's \" + response.status);\r",
-							"        }\r",
-							"    });\r",
+							"pm.test(\"Health check returns UP status\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.status).to.eql(\"UP\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{BASE_URL}}/actuator/health",
+				"description": "Verify application health status"
+			},
+			"response": []
+		},
+		{
+			"name": "Put Single Value",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Put operation successful\", function () {",
+							"    pm.response.to.have.status(201);",
+							"    pm.expect(pm.response.text()).to.include(\"Saved\");",
+							"});",
+							"",
+							"// Verify by getting the value",
+							"pm.sendRequest({",
+							"    url: pm.collectionVariables.get(\"BASE_URL\") + \"/api/get?key=\" + pm.collectionVariables.get(\"TEST_KEY\"),",
+							"    method: 'GET'",
+							"}, function (err, response) {",
+							"    pm.test(\"Value can be retrieved after PUT\", function () {",
+							"        pm.expect(response.code).to.equal(200);",
+							"        pm.expect(response.text()).to.equal(pm.collectionVariables.get(\"TEST_VALUE\"));",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key\": \"{{TEST_KEY}}\",\n    \"value\": \"{{TEST_VALUE}}\"\n}"
+				},
+				"url": "{{BASE_URL}}/api/put",
+				"description": "Save a single key-value pair"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Value",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get operation successful\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.expect(pm.response.text()).to.equal(pm.collectionVariables.get(\"TEST_VALUE\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/api/get?key={{TEST_KEY}}",
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "get"],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{TEST_KEY}}"
+						}
+					]
+				},
+				"description": "Retrieve value by key (value only)"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Full Object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get full object successful\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.key).to.equal(pm.collectionVariables.get(\"TEST_KEY\"));",
+							"    pm.expect(responseJson.value).to.equal(pm.collectionVariables.get(\"TEST_VALUE\"));",
+							"    pm.expect(responseJson.lastchange).to.exist;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/api/getfull?key={{TEST_KEY}}",
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "getfull"],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{TEST_KEY}}"
+						}
+					]
+				},
+				"description": "Retrieve complete object with metadata"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Existing Value",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Update operation successful\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.expect(pm.response.text()).to.include(\"Updated\");",
+							"});",
+							"",
+							"// Verify the updated value",
+							"pm.sendRequest({",
+							"    url: pm.collectionVariables.get(\"BASE_URL\") + \"/api/get?key=\" + pm.collectionVariables.get(\"TEST_KEY\"),",
+							"    method: 'GET'",
+							"}, function (err, response) {",
+							"    pm.test(\"Updated value can be retrieved\", function () {",
+							"        pm.expect(response.code).to.equal(200);",
+							"        pm.expect(response.text()).to.equal(pm.collectionVariables.get(\"UPDATED_VALUE\"));",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key\": \"{{TEST_KEY}}\",\n    \"value\": \"{{UPDATED_VALUE}}\"\n}"
+				},
+				"url": "{{BASE_URL}}/api/update",
+				"description": "Update an existing key-value pair"
+			},
+			"response": []
+		},
+		{
+			"name": "Put Multiple Values (Batch)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Batch put operation successful\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.expect(pm.response.text()).to.include(\"All values have been saved\");",
+							"});",
+							"",
+							"// Verify batch values were saved",
+							"pm.sendRequest({",
+							"    url: pm.collectionVariables.get(\"BASE_URL\") + \"/api/get?key=batch_key1\",",
+							"    method: 'GET'",
+							"}, function (err, response) {",
+							"    pm.test(\"First batch value can be retrieved\", function () {",
+							"        pm.expect(response.code).to.equal(200);",
+							"        pm.expect(response.text()).to.equal(\"batch_value1\");",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"key\": \"batch_key1\",\n        \"value\": \"batch_value1\"\n    },\n    {\n        \"key\": \"batch_key2\",\n        \"value\": \"batch_value2\"\n    },\n    {\n        \"key\": \"batch_key3\",\n        \"value\": \"batch_value3\"\n    }\n]"
+				},
+				"url": "{{BASE_URL}}/api/putall",
+				"description": "Save multiple key-value pairs in a single request"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Values",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get all operation successful\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an('array');",
+							"    pm.expect(responseJson.length).to.be.at.least(1);",
+							"    ",
+							"    // Check structure of first item",
+							"    if (responseJson.length > 0) {",
+							"        pm.expect(responseJson[0]).to.have.property('key');",
+							"        pm.expect(responseJson[0]).to.have.property('value');",
+							"        pm.expect(responseJson[0]).to.have.property('lastchange');",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{BASE_URL}}/api/getall",
+				"description": "Retrieve all key-value pairs with metadata"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Single Value",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete operation successful\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.expect(pm.response.text()).to.include(\"Deleted\");",
+							"});",
+							"",
+							"// Verify value was deleted",
+							"pm.sendRequest({",
+							"    url: pm.collectionVariables.get(\"BASE_URL\") + \"/api/get?key=\" + pm.collectionVariables.get(\"TEST_KEY\"),",
+							"    method: 'GET'",
+							"}, function (err, response) {",
+							"    pm.test(\"Deleted value cannot be retrieved\", function () {",
+							"        pm.expect(response.code).to.equal(404);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/api/delete?key={{TEST_KEY}}",
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "delete"],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{TEST_KEY}}"
+						}
+					]
+				},
+				"description": "Delete a specific key-value pair"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete All Values",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete all operation successful\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.expect(pm.response.text()).to.include(\"All values have been deleted\");",
+							"});",
+							"",
+							"// Verify all values were deleted",
+							"pm.sendRequest({",
+							"    url: pm.collectionVariables.get(\"BASE_URL\") + \"/api/getall\",",
+							"    method: 'GET'",
+							"}, function (err, response) {",
+							"    pm.test(\"No values remain after delete all\", function () {",
+							"        pm.expect(response.code).to.equal(200);",
+							"        const responseJson = response.json();",
+							"        pm.expect(responseJson).to.be.an('array');",
+							"        pm.expect(responseJson.length).to.equal(0);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "{{BASE_URL}}/api/deleteall",
+				"description": "Delete all key-value pairs (use with caution!)"
+			},
+			"response": []
+		},
+		{
+			"name": "Error Test - Get Non-existent Key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Non-existent key returns 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"    pm.expect(pm.response.text()).to.include(\"not been found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/api/get?key=non_existent_key_12345",
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "get"],
+					"query": [
+						{
+							"key": "key",
+							"value": "non_existent_key_12345"
+						}
+					]
+				},
+				"description": "Test error handling for non-existent keys"
+			},
+			"response": []
+		},
+		{
+			"name": "Error Test - Put Duplicate Key",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// First, create a test key",
+							"pm.sendRequest({",
+							"    url: pm.collectionVariables.get(\"BASE_URL\") + \"/api/put\",",
+							"    method: 'PUT',",
+							"    header: { 'Content-Type': 'application/json' },",
+							"    body: JSON.stringify({ key: \"duplicate_test_key\", value: \"original_value\" })",
+							"}, function (err, response) {",
+							"    console.log(\"Pre-request setup completed\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Duplicate key returns 409 conflict\", function () {",
+							"    pm.response.to.have.status(409);",
+							"    pm.expect(pm.response.text()).to.include(\"exists already\");",
+							"});",
+							"",
+							"// Cleanup - delete the test key",
+							"pm.sendRequest({",
+							"    url: pm.collectionVariables.get(\"BASE_URL\") + \"/api/delete?key=duplicate_test_key\",",
+							"    method: 'DELETE'",
+							"}, function (err, response) {",
+							"    console.log(\"Cleanup completed\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key\": \"duplicate_test_key\",\n    \"value\": \"duplicate_value\"\n}"
+				},
+				"url": "{{BASE_URL}}/api/put",
+				"description": "Test error handling for duplicate key creation"
+			},
+			"response": []
+		},
+		{
+			"name": "Error Test - Empty Key Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Empty key returns 400 bad request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.message).to.include(\"Validation failed\");",
+							"    pm.expect(responseJson.errors).to.be.an('array');",
+							"    pm.expect(responseJson.errors.length).to.be.above(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key\": \"\",\n    \"value\": \"test_value\"\n}"
+				},
+				"url": "{{BASE_URL}}/api/put",
+				"description": "Test validation for empty key"
+			},
+			"response": []
+		},
+		{
+			"name": "Error Test - Null Value Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Null value returns 400 bad request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.message).to.include(\"Validation failed\");",
+							"    pm.expect(responseJson.errors).to.be.an('array');",
+							"    // Check that one of the errors is about null value",
+							"    const hasNullValueError = responseJson.errors.some(error => error.code === 'NotNull');",
+							"    pm.expect(hasNullValueError).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key\": \"test_null_value\",\n    \"value\": null\n}"
+				},
+				"url": "{{BASE_URL}}/api/put",
+				"description": "Test validation for null value"
+			},
+			"response": []
+		},
+		{
+			"name": "Error Test - Update Non-existent Key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Update non-existent key returns 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"    pm.expect(pm.response.text()).to.include(\"not been found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key\": \"non_existent_update_key\",\n    \"value\": \"new_value\"\n}"
+				},
+				"url": "{{BASE_URL}}/api/update",
+				"description": "Test error handling for updating non-existent key"
+			},
+			"response": []
+		},
+		{
+			"name": "Error Test - Delete Non-existent Key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete non-existent key returns 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"    pm.expect(pm.response.text()).to.include(\"not been found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/api/delete?key=non_existent_delete_key_456",
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "delete"],
+					"query": [
+						{
+							"key": "key",
+							"value": "non_existent_delete_key_456"
+						}
+					]
+				},
+				"description": "Test error handling for deleting non-existent key"
+			},
+			"response": []
+		},
+		{
+			"name": "Error Test - Batch Put with Duplicates",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// First, create a test key that will conflict",
+							"pm.sendRequest({",
+							"    url: pm.collectionVariables.get(\"BASE_URL\") + \"/api/put\",",
+							"    method: 'PUT',",
+							"    header: { 'Content-Type': 'application/json' },",
+							"    body: JSON.stringify({ key: \"batch_conflict_key\", value: \"existing_value\" })",
+							"}, function (err, response) {",
+							"    console.log(\"Pre-request setup for batch conflict test completed\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Batch put with duplicate key returns 409 conflict\", function () {",
+							"    pm.response.to.have.status(409);",
+							"    pm.expect(pm.response.text()).to.include(\"exists already\");",
+							"});",
+							"",
+							"// Cleanup - delete the conflicting key",
+							"pm.sendRequest({",
+							"    url: pm.collectionVariables.get(\"BASE_URL\") + \"/api/delete?key=batch_conflict_key\",",
+							"    method: 'DELETE'",
+							"}, function (err, response) {",
+							"    console.log(\"Batch conflict cleanup completed\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"key\": \"batch_conflict_key\",\n        \"value\": \"conflict_value\"\n    },\n    {\n        \"key\": \"batch_new_key\",\n        \"value\": \"new_value\"\n    }\n]"
+				},
+				"url": "{{BASE_URL}}/api/putall",
+				"description": "Test error handling for batch operation with existing key"
+			},
+			"response": []
+		},
+		{
+			"name": "Error Test - Malformed JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Malformed JSON returns 400 bad request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"    // Should contain information about JSON parsing error",
+							"    pm.expect(pm.response.text()).to.be.ok;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key\": \"malformed_test\",\n    \"value\": \"test\"\n    // This is malformed JSON with a comment\n"
+				},
+				"url": "{{BASE_URL}}/api/put",
+				"description": "Test error handling for malformed JSON payload"
+			},
+			"response": []
+		},
+		{
+			"name": "Error Test - Missing Content-Type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Missing content-type returns 415 unsupported media type\", function () {",
+							"    pm.response.to.have.status(415);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -30,235 +694,10 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"key\": \"{{TestKey}}\",\r\n    \"value\": {{TestValue}}\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					"raw": "{\n    \"key\": \"content_type_test\",\n    \"value\": \"test\"\n}"
 				},
-				"url": "{{URL}}/put"
-			},
-			"response": []
-		},
-		{
-			"name": "Get",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/get?key={{TestKey}}",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"get"
-					],
-					"query": [
-						{
-							"key": "key",
-							"value": "{{TestKey}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetFull",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/getfull?key={{TestKey}}",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"getfull"
-					],
-					"query": [
-						{
-							"key": "key",
-							"value": "{{TestKey}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.sendRequest(pm.collectionVariables.get(\"URL\")+\"/get?key=\"+pm.collectionVariables.get(\"TestKey\"), function (err, response) {\r",
-							"    pm.test(\"The status of the GET after the PUT is not OK\", function () {\r",
-							"        if (response.status == \"OK\") {\r",
-							"            throw new Error (\"The status code of the GET after the PUT is OK\");\r",
-							"        }\r",
-							"    });\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/delete?key={{TestKey}}",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"delete"
-					],
-					"query": [
-						{
-							"key": "key",
-							"value": "{{TestKey}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "PutAll",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.sendRequest(pm.collectionVariables.get(\"URL\")+\"/get?key=\"+pm.collectionVariables.get(\"TestKey\"), function (err, response) {\r",
-							"    pm.test(\"The status of the GET after the PUT is OK\", function () {\r",
-							"        if (response.status != \"OK\") {\r",
-							"            throw new Error (\"The status code of the GET after the PUT is not OK but it's \" + response.status);\r",
-							"        }\r",
-							"    });\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"key\": \"{{TestKey}}\",\r\n    \"value\": {{TestValue}}\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": "{{URL}}/put"
-			},
-			"response": []
-		},
-		{
-			"name": "GetAll",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "{{URL}}/getall"
-			},
-			"response": []
-		},
-		{
-			"name": "DeleteAll",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.sendRequest(pm.collectionVariables.get(\"URL\")+\"/get?key=\"+pm.collectionVariables.get(\"TestKey\"), function (err, response) {\r",
-							"    pm.test(\"The status of the GET after the PUT is not OK\", function () {\r",
-							"        if (response.status == \"OK\") {\r",
-							"            throw new Error (\"The status code of the GET after the PUT is OK\");\r",
-							"        }\r",
-							"    });\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"pm.collectionVariables.set(\"CollectionRunEnded\", \"True\");"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/delete?key={{TestKey}}",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"delete"
-					],
-					"query": [
-						{
-							"key": "key",
-							"value": "{{TestKey}}"
-						}
-					]
-				}
+				"url": "{{BASE_URL}}/api/put",
+				"description": "Test error handling for missing Content-Type header"
 			},
 			"response": []
 		}
@@ -269,17 +708,8 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					"if (pm.collectionVariables.get(\"CollectionRunEnded\") == \"True\") {",
-					"    pm.collectionVariables.set(\"TestKey\", \"TestItem\")",
-					"    if (pm.collectionVariables.get(\"TestValue\") == pm.collectionVariables.get(\"TestString\")) {",
-					"        pm.collectionVariables.set(\"TestValue\", pm.collectionVariables.get(\"TestObject\"))",
-					"    } else if (pm.collectionVariables.get(\"TestValue\") == pm.collectionVariables.get(\"TestObject\")) {",
-					"        pm.collectionVariables.set(\"TestValue\", pm.collectionVariables.get(\"TestNumber\"))",
-					"    } else {",
-					"        pm.collectionVariables.set(\"TestValue\", pm.collectionVariables.get(\"TestString\"))",
-					"    }",
-					"    pm.collectionVariables.set(\"CollectionRunEnded\", \"False\");",
-					"}"
+					"// Global pre-request script",
+					"console.log('Running test against: ' + pm.collectionVariables.get('BASE_URL'));"
 				]
 			}
 		},
@@ -288,8 +718,9 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					"pm.test(\"Status code is 200\", function () {",
-					"    pm.response.to.have.status(200);",
+					"// Global test script",
+					"pm.test('Response time is acceptable', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
 					"});"
 				]
 			}
@@ -297,39 +728,28 @@
 	],
 	"variable": [
 		{
-			"key": "CollectionRunEnded",
-			"value": "True",
-			"type": "string"
+			"key": "BASE_URL",
+			"value": "http://localhost:8080",
+			"type": "string",
+			"description": "Base URL for the Spring Snake API"
 		},
 		{
-			"key": "URL",
-			"value": "http://localhost:8080/api",
-			"type": "string"
+			"key": "TEST_KEY",
+			"value": "test_key_postman",
+			"type": "string",
+			"description": "Test key for basic operations"
 		},
 		{
-			"key": "TestKey",
-			"value": "Hello",
-			"type": "string"
+			"key": "TEST_VALUE",
+			"value": "test_value_postman",
+			"type": "string",
+			"description": "Test value for basic operations"
 		},
 		{
-			"key": "TestValue",
-			"value": "\"There\"",
-			"type": "string"
-		},
-		{
-			"key": "TestString",
-			"value": "\"Oiboh\"",
-			"type": "string"
-		},
-		{
-			"key": "TestObject",
-			"value": "{\"ObjectItem\":\"aisudguiasdaiu\"}",
-			"type": "string"
-		},
-		{
-			"key": "TestNumber",
-			"value": "-3.141592654",
-			"type": "string"
+			"key": "UPDATED_VALUE",
+			"value": "updated_test_value_postman",
+			"type": "string",
+			"description": "Updated test value for update operations"
 		}
 	]
 }
