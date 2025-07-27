@@ -4,16 +4,23 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.springsnake.backend.utils.ValueDTO;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 // Annotation to indicate that this class is a Spring MVC controller
 @RequestMapping("/api")
 @RestController
 @AllArgsConstructor
+@Validated
+@Slf4j
+@CrossOrigin(origins = "*") // Configure this properly in production
 public class ValueController {
 
     // Message for a value not found
@@ -24,12 +31,15 @@ public class ValueController {
 
     // Endpoint to retrieve a value by key
     @GetMapping("/get")
-    public ResponseEntity<Object> get(@RequestParam("key") String key) {
+    public ResponseEntity<Object> get(@RequestParam("key") @NotBlank String key) {
+        log.info("Getting value for key: {}", key);
         // Check if the value is not found
         if (service.get(key).toString() == notfound) {
+            log.warn("Value not found for key: {}", key);
             return new ResponseEntity<>(notfound, HttpStatus.NOT_FOUND);
         }
         // Return the value with a success status
+        log.info("Successfully retrieved value for key: {}", key);
         return new ResponseEntity<>(service.get(key), HttpStatus.OK);
     }
 
@@ -53,12 +63,16 @@ public class ValueController {
 
     // Endpoint to add or update a value
     @PutMapping("/put")
-    public ResponseEntity<String> put(@RequestBody ValueDTO value) {
+    public ResponseEntity<String> put(@Valid @RequestBody ValueDTO value) {
+        log.info("Putting value for key: {}", value.getKey());
         // Check if the value exists
         if (service.get(value.getKey()) == notfound) {
-            return new ResponseEntity<>(service.put(value.getKey(), value.getValue()), HttpStatus.OK);
+            String result = service.put(value.getKey(), value.getValue());
+            log.info("Successfully put value for key: {}", value.getKey());
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
         }
         // Return conflict status if the value exists
+        log.warn("Value already exists for key: {}", value.getKey());
         return new ResponseEntity<>("This value exists already", HttpStatus.CONFLICT);
     }
 
