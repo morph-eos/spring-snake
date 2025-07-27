@@ -30,6 +30,42 @@
           '--'
 </pre>
 
+## Table of Contents
+
+- [Description](#description)
+- [Features](#features)
+  - [Backend (Spring Boot + MongoDB)](#backend-spring-boot--mongodb)
+  - [Frontend (Python CLI)](#frontend-python-cli)
+- [Prerequisites](#prerequisites)
+- [Quick Start](#quick-start)
+  - [Option 1: Automated Setup (Recommended)](#option-1-automated-setup-recommended)
+  - [Option 2: Manual Setup](#option-2-manual-setup)
+- [API Documentation](#api-documentation)
+  - [Available Endpoints](#available-endpoints)
+  - [API Examples](#api-examples)
+- [Configuration](#configuration)
+  - [Environment Variables](#environment-variables)
+  - [Health Checks](#health-checks)
+  - [Batch Operations Examples](#batch-operations-examples)
+- [Usage](#usage)
+  - [CLI Operations](#cli-operations)
+  - [CLI Usage Examples](#cli-usage-examples)
+- [Development](#development)
+  - [Scripts](#scripts)
+  - [Development Workflow](#development-workflow)
+- [Project Structure](#project-structure)
+  - [Recent Improvements (Phase 2)](#recent-improvements-phase-2)
+- [Testing](#testing)
+  - [Manual API Testing](#manual-api-testing)
+  - [Python CLI Testing](#python-cli-testing)
+- [Troubleshooting](#troubleshooting)
+  - [Common Issues](#common-issues)
+  - [Logs](#logs)
+- [Contributing](#contributing)
+  - [Security Notes](#security-notes)
+- [License](#license)
+- [Author](#author)
+
 ## Description
 
 Spring Snake is a comprehensive key-value store system that combines a Spring Boot REST API backend with MongoDB storage and an interactive Python CLI client. This project demonstrates modern software architecture principles including containerization, comprehensive error handling, input validation, and user-friendly interfaces.
@@ -63,7 +99,23 @@ Spring Snake is a comprehensive key-value store system that combines a Spring Bo
 
 ## Quick Start
 
-### 1. Build and Start the Application
+### Option 1: Automated Setup (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/M04ph3u2/Spring-Snake.git
+cd Spring-Snake
+
+# Run setup script (creates Python env, builds containers, starts services)
+./setup.sh
+
+# Verify everything is working
+./verify.sh
+```
+
+### Option 2: Manual Setup
+
+#### 1. Build and Start the Application
 
 ```bash
 # Build and start all services with Docker Compose
@@ -73,14 +125,7 @@ docker compose up -d
 curl http://localhost:8080/actuator/health
 ```
 
-The system will automatically:
-
-- Build the Spring Boot application using multi-stage Docker builds
-- Set up MongoDB with authentication
-- Configure health checks and networking
-- Start all services with proper dependencies
-
-### 2. Python CLI Client Setup
+#### 2. Python CLI Client Setup
 
 ```bash
 # Navigate to Python directory
@@ -94,7 +139,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 3. Using the Python CLI Client
+#### 3. Using the Python CLI Client
 
 ```bash
 # Normal operation (clean interface)
@@ -224,10 +269,35 @@ python main.py --debug
 
 ## Development
 
-### Project Structure
+### Scripts
 
-``` sh
-├── Python/                          # Python CLI client
+The project includes utility scripts for development:
+
+- **`setup.sh`**: Quick project setup - creates Python environment, builds Docker containers, and starts all services
+- **`verify.sh`**: System health check - verifies all services are running and APIs are responsive
+- **`compose.yaml`**: Docker Compose configuration for all services
+
+### Development Workflow
+
+```bash
+# Initial setup
+./setup.sh
+
+# Verify system health
+./verify.sh
+
+# Development cycle
+docker compose logs -f api    # Monitor backend logs
+
+# Cleanup (if needed)
+docker compose down -v        # Stop and remove all containers and volumes
+```
+
+## Project Structure
+
+```text
+Spring-Snake/
+├── Python/                         # Python CLI client
 │   ├── venv/                       # Virtual environment (auto-generated)
 │   ├── requirements.txt            # Python dependencies
 │   ├── main.py                     # Main CLI application with debug support
@@ -243,6 +313,8 @@ python main.py --debug
 │   │       └── utils/                     # Data transfer objects
 │   ├── Dockerfile                  # Multi-stage Docker build
 │   └── pom.xml                     # Maven dependencies
+├── setup.sh                        # Automated project setup script
+├── verify.sh                       # System verification script
 ├── compose.yaml                    # Docker Compose configuration
 ├── README.md                       # This file
 └── SpringSnake_APIs_Tests.postman_collection.json  # Postman API tests
@@ -286,7 +358,28 @@ This version includes significant enhancements over the initial implementation:
 
 ### Manual API Testing
 
-Use the provided Postman collection (`SpringSnake_APIs_Tests.postman_collection.json`) or test endpoints manually:
+Use the provided Postman collection (`SpringSnake_APIs_Tests.postman_collection.json`) for comprehensive API testing, or test endpoints manually:
+
+#### Postman Collection Features
+
+The updated Postman collection includes:
+
+- **18 comprehensive test scenarios**: Complete coverage of all API endpoints
+- **Complete endpoint coverage**: All 9 API endpoints with proper HTTP methods
+- **Comprehensive test scenarios**: Success cases, error handling, and edge cases  
+- **Automated verification**: Response validation and follow-up tests
+- **Clean variables**: Simplified BASE_URL and test data management
+- **Error testing**: Non-existent keys, duplicate keys, validation errors, malformed JSON, and missing headers
+- **Bean validation testing**: Empty key validation, null value validation with proper Spring Boot error parsing
+
+To use the collection:
+
+1. Import `SpringSnake_APIs_Tests.postman_collection.json` into Postman
+2. Ensure your Spring Snake system is running (`./setup.sh`)
+3. Run the entire collection or individual requests
+4. All tests should pass if the system is working correctly
+
+#### Manual cURL Testing
 
 ```bash
 # Test all endpoints
