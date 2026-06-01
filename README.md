@@ -71,7 +71,6 @@
 - [Contributing](#contributing)
   - [Security Notes](#security-notes)
 - [License](#license)
-- [Author](#author)
 
 ## Description
 
@@ -415,9 +414,3 @@ This project demonstrates modern software development practices including:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Author
-
-**M04ph3u2** - [GitHub Profile](https://github.com/M04ph3u2)
-
-Project Repository: [Spring-Snake](https://github.com/M04ph3u2/Spring-Snake)
