@@ -94,7 +94,7 @@ Spring Snake is a comprehensive key-value store system that combines a Spring Bo
 - **Enhanced Error Handling**: Graceful error recovery and user feedback
 - **Input Validation**: Comprehensive validation with helpful error messages
 - **Debug Mode**: Optional detailed logging with `--debug` flag
-- **Export Capabilities**: Save data to JSON, CSV, and TXT formats
+- **Export Capabilities**: Save data to JSON and YAML formats
 - **Keyboard Interrupt Handling**: Graceful exit with Ctrl+C
 
 ## Prerequisites
@@ -160,7 +160,7 @@ The CLI provides:
 - **Save Operation**: Store single or multiple key-value pairs
 - **Get Operation**: Retrieve values by key or get all data
 - **Delete Operation**: Remove specific keys or all data
-- **Export Functions**: Save data to JSON, CSV, or text files
+- **Export Functions**: Save data to JSON or YAML files
 
 ## API Documentation
 
@@ -221,7 +221,7 @@ The application uses environment variables for configuration:
 
 - `MONGO_USERNAME`: MongoDB username (default: springsnake)
 - `MONGO_PASSWORD`: MongoDB password (default: defaultpassword)  
-- `MONGO_DATABASE`: Database name (default: springsnake_db)
+- `MONGO_DATABASE`: Database name (default: admin)
 - `SPRING_PORT`: Application port (default: 8080)
 - `SPRING_PROFILE`: Spring profile (default: docker)
 
@@ -259,7 +259,7 @@ The Python CLI client provides an interactive menu for seamless interaction with
 1. **Save Operation**: Store single or multiple key-value pairs with validation
 2. **Get Operation**: Retrieve specific values by key or export all data to files
 3. **Delete Operation**: Remove specific keys or clear the entire database
-4. **Export Functions**: Save retrieved data to JSON, CSV, or text formats
+4. **Export Functions**: Save retrieved data to JSON or YAML formats
 
 ### CLI Usage Examples
 
