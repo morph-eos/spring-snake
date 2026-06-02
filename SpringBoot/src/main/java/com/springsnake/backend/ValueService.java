@@ -24,7 +24,7 @@ import lombok.AllArgsConstructor;
  * The service utilizes ValueDAO for batch operations and direct repository
  * access for individual operations, ensuring optimal performance and consistency.
  * 
- * @author M04ph3u2
+ * @author Stefano Sciacovelli
  * @version 2.0
  * @since 1.0
  */

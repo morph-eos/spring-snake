@@ -17,7 +17,7 @@ import com.springsnake.backend.values;
  * - Custom query method for finding values by key
  * - Automatic query derivation based on method names
  * 
- * @author M04ph3u2
+ * @author Stefano Sciacovelli
  * @version 2.0
  * @since 1.0
  */

@@ -23,8 +23,8 @@ Configuration:
     DEFAULT_TIMEOUT: Default timeout for HTTP requests (10 seconds)
     BATCH_TIMEOUT: Timeout for batch operations (30 seconds)
 
-Author: M04ph3u2
-Repository: https://github.com/M04ph3u2/Spring-Snake
+Author: Stefano Sciacovelli
+Repository: https://github.com/morph-eos/Spring-Snake
 """
 
 import json

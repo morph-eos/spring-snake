@@ -20,7 +20,7 @@ import lombok.Data;
  * - Value data (can be any object type)
  * - Automatic timestamp generation for tracking changes
  * 
- * @author M04ph3u2
+ * @author Stefano Sciacovelli
  * @version 2.0
  * @since 1.0
  */

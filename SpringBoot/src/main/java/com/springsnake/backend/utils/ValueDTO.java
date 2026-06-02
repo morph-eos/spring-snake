@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
  * - Value: The stored data (can be any object type)
  * - LastChange: Timestamp of the last modification
  * 
- * @author M04ph3u2
+ * @author Stefano Sciacovelli
  * @version 2.0
  * @since 1.0
  */

@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  * All endpoints return appropriate HTTP status codes and error messages
  * for proper client-side error handling.
  * 
- * @author M04ph3u2
+ * @author Stefano Sciacovelli
  * @version 2.0
  * @since 1.0
  */

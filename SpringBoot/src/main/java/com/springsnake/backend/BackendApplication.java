@@ -18,7 +18,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * The application provides a robust backend service for storing and retrieving
  * key-value pairs with full REST API support, designed for containerized deployment.
  * 
- * @author M04ph3u2
+ * @author Stefano Sciacovelli
  * @version 2.0
  * @since 1.0
  */

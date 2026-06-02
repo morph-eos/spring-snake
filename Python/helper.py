@@ -16,8 +16,8 @@ Constants:
     nice_image: ASCII art for the application logo
     menu: Main menu text for user interaction
 
-Author: M04ph3u2
-Repository: https://github.com/M04ph3u2/Spring-Snake
+Author: Stefano Sciacovelli
+Repository: https://github.com/morph-eos/Spring-Snake
 """
 
 import pandas

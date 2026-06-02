@@ -109,7 +109,7 @@ Spring Snake is a comprehensive key-value store system that combines a Spring Bo
 
 ```bash
 # Clone the repository
-git clone https://github.com/M04ph3u2/Spring-Snake.git
+git clone https://github.com/morph-eos/Spring-Snake.git
 cd Spring-Snake
 
 # Run setup script (creates Python env, builds containers, starts services)

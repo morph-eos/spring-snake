@@ -23,8 +23,8 @@ Dependencies:
     - pandas: Data manipulation and analysis
     - pytz: Timezone handling
 
-Author: M04ph3u2
-Repository: https://github.com/M04ph3u2/Spring-Snake
+Author: Stefano Sciacovelli
+Repository: https://github.com/morph-eos/Spring-Snake
 Version: 2.0
 """
 
